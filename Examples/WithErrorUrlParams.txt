@@ -1,0 +1,40 @@
+using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.OpenApi.Models;
+
+public static class MyFunction
+{
+    [FunctionName("MyFunction")]
+    [OpenApiOperation(operationId: "Run", tags: new[] { "example" })]
+    [OpenApiParameter(name: "id", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The unique identifier for the resource")]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "The OK response")]
+    [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Bad request")]
+    [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "Resource not found")]
+    [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.InternalServerError, Description = "Internal server error")]
+    public static IActionResult Run(
+        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "resource/{id}")] HttpRequest req,
+        ILogger log, string id)
+    {
+        log.LogInformation("C# HTTP trigger function processed a request.");
+
+        if (string.IsNullOrEmpty(id))
+        {
+            return new BadRequestObjectResult("The 'id' parameter is required.");
+        }
+
+        try
+        {
+            // Your logic here
+            return new OkObjectResult($"Success with ID: {id}");
+        }
+        catch (Exception)
+        {
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
+    }
+}

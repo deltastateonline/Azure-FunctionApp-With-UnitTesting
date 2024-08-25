@@ -1,0 +1,58 @@
+public static class ModifyOrder
+{
+    [FunctionName("ModifyOrder")]
+    [OpenApiOperation(operationId: "run", tags: new[] { "Modify Order" })]
+    [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+    [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(Parameters), Description = "Parameters", Required = true)]
+    [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The OK response")]
+    public static async Task<IActionResult> run(
+        [HttpTrigger(AuthorizationLevel.Function, "PUT", Route = null)] HttpRequest req,
+        ILogger log)
+    {
+        log.LogInformation($"C# HTTP trigger function processed a request.");
+
+        string ordernumber;
+
+        string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+        dynamic data = JsonConvert.DeserializeObject(requestBody);
+        ordernumber = data?.orderno;
+
+        string responseMessage = $"Order:{ordernumber}";
+        return new OkObjectResult(responseMessage);
+    }
+}
+
+[OpenApiExample(typeof(ParametersExample))]
+public class Parameters
+{
+    /// <summary>The id of the customer in the context. This is also called payer, sub_account_id.</summary>
+    [OpenApiPropertyDescription("The id of the customer in the context. This is also called payer, sub_account_id.")]
+    [Newtonsoft.Json.JsonProperty("customerId", Required = Newtonsoft.Json.Required.Always)]
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    public string CustomerId { get; set; }
+
+    /// <summary>The order number. Used to uniquely identify a group of order lines.</summary>
+    [OpenApiPropertyDescription("The order number. Used to uniquely identify a group of order lines.")]
+    [Newtonsoft.Json.JsonProperty("orderNumber", Required = Newtonsoft.Json.Required.Always)]
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    public string OrderNumber { get; set; }
+}
+
+public class ParametersExample : OpenApiExample<Parameters>
+{
+    public override IOpenApiExample<Parameters> Build(NamingStrategy namingStrategy = null)
+    {
+        this.Examples.Add(
+            OpenApiExampleResolver.Resolve(
+                "ParametersExample",
+                new Parameters()
+                {
+                    CustomerId = "CUST12345",
+                    OrderNumber = "ORD001"
+                },
+                namingStrategy
+            ));
+
+        return this;
+    }
+}
