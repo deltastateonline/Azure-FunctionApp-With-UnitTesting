@@ -9,7 +9,8 @@ namespace Deltastateonline.Dtos
         
         [OpenApiProperty(Description ="The product name is required.",Nullable = false)]
         //[Newtonsoft.Json.JsonProperty("productName", Required = Newtonsoft.Json.Required.Always)]        
-        [Required(ErrorMessage = "ProductName is required")]
+        [Required(ErrorMessage = "ProductName is required" )]
+        [MaxLength(20)]
         public string? ProductName { get; set; }
 
         [Required(ErrorMessage = "Quantity is required")]

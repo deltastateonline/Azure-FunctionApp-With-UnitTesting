@@ -26,23 +26,23 @@ namespace Company.Function
 
         [OpenApiOperation(operationId: "Create", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(PODto), Description = "Shipping Notice Details", Required = true)]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(POItem), Summary = "Success", Description = "This returns the response")]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ShippingNoticeDto), Description = "Shipping Notice Details", Required = true)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ResponseObj), CustomHeaderType =typeof(CustomResponseHeader),Summary = "Success", Description = "This returns the response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Bad Request")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.InternalServerError, Description = "Internal server error")]
 
         [Function("ShippingNotice")]
-        public async Task<MultipleOutputs<PODto>> RunAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req , FunctionContext context)
+        public async Task<MultipleOutputs<ShippingNoticeDto>> RunAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req , FunctionContext context)
         {
                 _logger.LogInformation("C# HTTP trigger function processed a request.");
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
                 HttpResponseData  response = req.CreateResponse();
                 response.Headers.Add("x-correlationid", context.InvocationId);
-                PODto inputRequest = null;
+                ShippingNoticeDto inputRequest = null;
                 try
                 {
-                    inputRequest  = JsonConvert.DeserializeObject<PODto>(requestBody);
+                    inputRequest  = JsonConvert.DeserializeObject<ShippingNoticeDto>(requestBody);
 
                     var validationResults = new List<ValidationResult>();
                     var validationContext = new ValidationContext(inputRequest, null, null);
@@ -54,7 +54,7 @@ namespace Company.Function
                         response.StatusCode = HttpStatusCode.BadRequest;  
                         await response.WriteAsJsonAsync(validationResults);      
 
-                        return new MultipleOutputs<PODto>{
+                        return new MultipleOutputs<ShippingNoticeDto>{
                             ServiceBusMessage = null,
                             HttpResponse = response
                         };                       
@@ -65,16 +65,16 @@ namespace Company.Function
                 {
                     response.StatusCode = HttpStatusCode.InternalServerError;
                     _logger.LogError(ex.Message);
-                    return new MultipleOutputs<PODto>{
+                    return new MultipleOutputs<ShippingNoticeDto>{
                         ServiceBusMessage = null,
                         HttpResponse = response
                     };                    
                 }     
 
                 response.StatusCode = HttpStatusCode.OK; 
-                await response.WriteAsJsonAsync(new {message = "Request Created"});
+                await response.WriteAsJsonAsync(new ResponseObj{Message = "Request Created" , correlationid = context.InvocationId});
 
-                return new MultipleOutputs<PODto>{
+                return new MultipleOutputs<ShippingNoticeDto>{
                     ServiceBusMessage = inputRequest,
                     HttpResponse = response
                 }; 
