@@ -9,7 +9,6 @@ namespace Deltastateonline.Utility
     {
         [ServiceBusOutput("outbound", Connection = "ServiceBusConnection")]
         public T ServiceBusMessage { get; set; }
-
         public HttpResponseData HttpResponse { get; set; }
     }
 }

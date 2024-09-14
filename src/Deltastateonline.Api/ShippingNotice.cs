@@ -42,12 +42,11 @@ namespace Company.Function
                 ShippingNoticeDto inputRequest = null;
                 try
                 {
-                    inputRequest  = JsonConvert.DeserializeObject<ShippingNoticeDto>(requestBody);
+                    inputRequest  = JsonConvert.DeserializeObject<ShippingNoticeDto>(requestBody)?? throw new ArgumentNullException(nameof(ShippingNoticeDto));
 
                     var validationResults = new List<ValidationResult>();
                     var validationContext = new ValidationContext(inputRequest, null, null);
                     bool isValid = Validator.TryValidateObject(inputRequest, validationContext, validationResults, true);                   
-                    
 
                     if (!isValid)
                     { 
@@ -64,6 +63,7 @@ namespace Company.Function
                 catch (System.Exception ex)
                 {
                     response.StatusCode = HttpStatusCode.InternalServerError;
+                    await response.WriteAsJsonAsync(ex.Message);  
                     _logger.LogError(ex.Message);
                     return new MultipleOutputs<ShippingNoticeDto>{
                         ServiceBusMessage = null,
