@@ -39,6 +39,9 @@ namespace Company.Function
 
                 HttpResponseData  response = req.CreateResponse();
                 response.Headers.Add("x-correlationid", context.InvocationId);
+                response.Headers.Add("Content-Type", "application/json");
+
+                
                 ShippingNoticeDto inputRequest = null;
                 try
                 {
@@ -50,20 +53,19 @@ namespace Company.Function
 
                     if (!isValid)
                     { 
-                        response.StatusCode = HttpStatusCode.BadRequest;  
-                        await response.WriteAsJsonAsync(validationResults);      
+                        response.StatusCode = HttpStatusCode.BadRequest;
+                        response.WriteString(JsonConvert.SerializeObject(validationResults));      
 
                         return new MultipleOutputs<ShippingNoticeDto>{
                             ServiceBusMessage = null,
                             HttpResponse = response
-                        };                       
-                        
+                        };  
                     }
                 }
                 catch (System.Exception ex)
-                {
+                {                    
                     response.StatusCode = HttpStatusCode.InternalServerError;
-                    await response.WriteAsJsonAsync(ex.Message);  
+                    response.WriteString(ex.Message);  
                     _logger.LogError(ex.Message);
                     return new MultipleOutputs<ShippingNoticeDto>{
                         ServiceBusMessage = null,
@@ -71,7 +73,7 @@ namespace Company.Function
                     };                    
                 }     
 
-                response.StatusCode = HttpStatusCode.OK; 
+                response.StatusCode = HttpStatusCode.OK;               
                 await response.WriteAsJsonAsync(new ResponseObj{Message = "Request Created" , correlationid = context.InvocationId});
 
                 return new MultipleOutputs<ShippingNoticeDto>{
