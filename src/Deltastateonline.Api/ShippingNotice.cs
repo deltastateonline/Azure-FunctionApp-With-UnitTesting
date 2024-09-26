@@ -24,7 +24,7 @@ namespace Company.Function
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "Create", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "CreateShippingNotice", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ShippingNoticeDto), Description = "Shipping Notice Details", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ResponseObj), CustomHeaderType =typeof(CustomResponseHeader),Summary = "Success", Description = "This returns the response")]

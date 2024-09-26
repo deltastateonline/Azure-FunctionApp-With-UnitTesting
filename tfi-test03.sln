@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShippingNoticeApi", "src\Deltastateonline.Api\ShippingNoticeApi.csproj", "{3B649F12-DC32-4AAD-8CF5-6F9BD318A34C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShippingNoticeTest", "src\ShippingNoticeTest\ShippingNoticeTest.csproj", "{4B20F422-FF75-479B-B258-F5C6C4A56A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShippingNoticeTest", "src\ShippingNoticeTest\ShippingNoticeTest.csproj", "{4B20F422-FF75-479B-B258-F5C6C4A56A68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
