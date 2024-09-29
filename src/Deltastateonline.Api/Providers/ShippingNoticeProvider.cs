@@ -10,6 +10,12 @@ namespace tfi_test03.Providers
         public ShippingNoticeProvider(IShippingNoticeRepoWrapper shippingNoticeRepoWrapper) { 
             _shippingNoticeRepoWrapper = shippingNoticeRepoWrapper;
         }
+
+        public async Task<ShippingNotice?> GetShippingNotice(string ShipmentId)
+        {
+           return _shippingNoticeRepoWrapper.ShippingNotices.FirstOrDefault(x=>x.ShipmentId.Equals(ShipmentId));
+        }
+
         public async Task<List<ShippingNotice>> GetShippingNoticeListAsync()
         {            
             return _shippingNoticeRepoWrapper.ShippingNotices;
