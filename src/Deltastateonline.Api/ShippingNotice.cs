@@ -24,7 +24,7 @@ namespace Company.Function
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "Create", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiOperation(operationId: "CreateShippingNotice", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ShippingNoticeDto), Description = "Shipping Notice Details", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ResponseObj), CustomHeaderType =typeof(CustomResponseHeader),Summary = "Success", Description = "This returns the response")]
@@ -39,6 +39,9 @@ namespace Company.Function
 
                 HttpResponseData  response = req.CreateResponse();
                 response.Headers.Add("x-correlationid", context.InvocationId);
+                response.Headers.Add("Content-Type", "application/json");
+
+                
                 ShippingNoticeDto inputRequest = null;
                 try
                 {
@@ -50,20 +53,19 @@ namespace Company.Function
 
                     if (!isValid)
                     { 
-                        response.StatusCode = HttpStatusCode.BadRequest;  
-                        await response.WriteAsJsonAsync(validationResults);      
+                        response.StatusCode = HttpStatusCode.BadRequest;
+                        response.WriteString(JsonConvert.SerializeObject(validationResults));      
 
                         return new MultipleOutputs<ShippingNoticeDto>{
                             ServiceBusMessage = null,
                             HttpResponse = response
-                        };                       
-                        
+                        };  
                     }
                 }
                 catch (System.Exception ex)
-                {
+                {                    
                     response.StatusCode = HttpStatusCode.InternalServerError;
-                    await response.WriteAsJsonAsync(ex.Message);  
+                    response.WriteString(ex.Message);  
                     _logger.LogError(ex.Message);
                     return new MultipleOutputs<ShippingNoticeDto>{
                         ServiceBusMessage = null,
@@ -71,7 +73,7 @@ namespace Company.Function
                     };                    
                 }     
 
-                response.StatusCode = HttpStatusCode.OK; 
+                response.StatusCode = HttpStatusCode.OK;               
                 await response.WriteAsJsonAsync(new ResponseObj{Message = "Request Created" , correlationid = context.InvocationId});
 
                 return new MultipleOutputs<ShippingNoticeDto>{
