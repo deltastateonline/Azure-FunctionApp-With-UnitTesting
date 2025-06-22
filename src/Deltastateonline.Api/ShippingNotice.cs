@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Web.Http;
 using Deltastateonline.Dtos;
-using Deltastateonline.Models;
+using ShippingModels.Models;
 using Deltastateonline.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Functions.Worker;
@@ -25,7 +25,9 @@ namespace Company.Function
         }
 
         [OpenApiOperation(operationId: "CreateShippingNotice", tags: new[] { "Shipping-Notice" }, Summary = "Create Shipping Notice", Description = "This creates a Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "x-functions-key",In = ParameterLocation.Header,Required = true,Type = typeof(string),Summary = "function auth key",Description = "Auth key.")]
         [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("x-functions-key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Header)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ShippingNoticeDto), Description = "Shipping Notice Details", Required = true)]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ResponseObj), CustomHeaderType =typeof(CustomResponseHeader),Summary = "Success", Description = "This returns the response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Bad Request")]
@@ -38,8 +40,8 @@ namespace Company.Function
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
 
                 HttpResponseData  response = req.CreateResponse();
-                response.Headers.Add("x-correlationid", context.InvocationId);
-                response.Headers.Add("Content-Type", "application/json");
+                //response.Headers.Add("x-correlationid", context.InvocationId);
+                //response.Headers.Add("Content-Type", "application/json");
 
                 
                 ShippingNoticeDto inputRequest = null;

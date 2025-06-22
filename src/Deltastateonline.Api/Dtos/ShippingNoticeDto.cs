@@ -15,11 +15,10 @@ namespace Deltastateonline.Dtos
 
     public class ProductDto
     {
-         [Required]
+        [Required]
         public string ProductCode { get; set; }
         public string Description { get; set; }
-
-         [Required]
+        [Required]
         public int Quantity { get; set; }
     }
 }

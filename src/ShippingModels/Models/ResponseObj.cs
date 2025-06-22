@@ -1,4 +1,4 @@
-namespace Deltastateonline.Models
+namespace ShippingModels.Models
 {
     public class ResponseObj
     {

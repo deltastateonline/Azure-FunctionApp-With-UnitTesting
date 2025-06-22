@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Company.Function;
-using Deltastateonline.Models;
+using ShippingModels.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -31,9 +31,9 @@ namespace ShippingNoticeTest
         public async Task Run_ReturnsOkResponse_WithShippingNotices()
         {
             // Arrange
-            var expectedNotices = new List<Deltastateonline.Models.ShippingNotice>
+            var expectedNotices = new List<ShippingModels.Models.ShippingNotice>
             {
-                new Deltastateonline.Models.ShippingNotice { ShipmentId = "S001", ExpectedArrival = DateTime.Now.AddDays(3), CarrierName = "FastShip", TrackingNumber = "TRACK001" }
+                new ShippingModels.Models.ShippingNotice { ShipmentId = "S001", ExpectedArrival = DateTime.Now.AddDays(3), CarrierName = "FastShip", TrackingNumber = "TRACK001" }
             };
             _mockShippingNoticeProvider.Setup(provider => provider.GetShippingNoticeListAsync()).ReturnsAsync(expectedNotices);
 
@@ -95,7 +95,7 @@ namespace ShippingNoticeTest
             var response = new Mock<HttpResponseData>(context.Object);
 
             var shippingNotice = 
-                new Deltastateonline.Models.ShippingNotice { ShipmentId = "S001", ExpectedArrival = DateTime.Now.AddDays(3), CarrierName = "FastShip", TrackingNumber = "TRACK001" }
+                new ShippingModels.Models.ShippingNotice { ShipmentId = "S001", ExpectedArrival = DateTime.Now.AddDays(3), CarrierName = "FastShip", TrackingNumber = "TRACK001" }
            ;
 
 

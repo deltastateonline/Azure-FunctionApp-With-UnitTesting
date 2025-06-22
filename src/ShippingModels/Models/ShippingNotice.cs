@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Deltastateonline.Models
+namespace ShippingModels.Models
 {
     public class ShippingNotice
     {

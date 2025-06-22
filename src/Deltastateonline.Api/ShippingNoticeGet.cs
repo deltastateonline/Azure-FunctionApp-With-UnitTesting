@@ -24,8 +24,10 @@ namespace Company.Function
 
         [Function("ShippingNoticeGet")]
         [OpenApiOperation(operationId: "GetShippingNotices", tags: new[] { "Shipping-Notice" }, Summary = "Get all Shipping notices", Description = "This gets the list Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]        
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<Deltastateonline.Models.ShippingNotice>), CustomHeaderType = typeof(CustomResponseHeader), Summary = "Success", Description = "This returns the response")]
+        [OpenApiParameter(name: "x-functions-key", In = ParameterLocation.Header, Required = true, Type = typeof(string), Summary = "function auth key", Description = "Auth key.")]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("x-functions-key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Header)]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(List<ShippingModels.Models.ShippingNotice>), CustomHeaderType = typeof(CustomResponseHeader), Summary = "Success", Description = "This returns the response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Bad Request")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.InternalServerError, Description = "Internal server error")]
 
@@ -45,10 +47,12 @@ namespace Company.Function
         }
 
         [Function("ShippingNoticeGetById")]
-        [OpenApiOperation(operationId: "GetShippingNoticebyId", tags: new[] { "Shipping-Notice" }, Summary = "Get all Shipping notices", Description = "This gets the list Shipping Notice.", Visibility = OpenApiVisibilityType.Important)]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]        
+        [OpenApiOperation(operationId: "GetShippingNoticebyId", tags: new[] { "Shipping-Notice" }, Summary = "Get Shipping Notice By ID", Description = "This gets the Shipping Notice by ID.", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiParameter(name: "x-functions-key", In = ParameterLocation.Header, Required = true, Type = typeof(string), Summary = "function auth key", Description = "Auth key.")]
+        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
+        [OpenApiSecurity("x-functions-key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Header)]
         [OpenApiParameter("shipmentId",In = ParameterLocation.Path , Required = true,Type = typeof(string))]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Deltastateonline.Models.ShippingNotice), CustomHeaderType = typeof(CustomResponseHeader), Summary = "Success", Description = "This returns the response")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ShippingModels.Models.ShippingNotice), CustomHeaderType = typeof(CustomResponseHeader), Summary = "Success", Description = "This returns the response")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.BadRequest, Description = "Bad Request")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.InternalServerError, Description = "Internal server error")]
 
